@@ -1,0 +1,31 @@
+access widener version 1
+
+# ClientPlayerEntityMixin
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.client.network.ClientPlayerEntity
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.client.MinecraftClient
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.util.math.BlockPos
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.util.math.Vec3d
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.util.math.BlockState
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.block.Block
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.item.BlockItem
+grant com.example.mixin.client.ClientPlayerEntityMixin net.minecraft.client.util.math.MatrixStack
+
+# BlockPlacementHandler
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.client.network.ClientPlayerEntity
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.client.MinecraftClient
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.util.math.BlockPos
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.util.math.Vec3d
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.util.math.BlockState
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.block.Block
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.item.BlockItem
+grant com.example.javamod01.BlockPlacementHandler net.minecraft.client.util.math.MatrixStack
+
+# PreviewState
+grant com.example.javamod01.PreviewState net.minecraft.client.network.ClientPlayerEntity
+grant com.example.javamod01.PreviewState net.minecraft.client.MinecraftClient
+grant com.example.javamod01.PreviewState net.minecraft.util.math.BlockPos
+grant com.example.javamod01.PreviewState net.minecraft.util.math.Vec3d
+grant com.example.javamod01.PreviewState net.minecraft.util.math.BlockState
+grant com.example.javamod01.PreviewState net.minecraft.block.Block
+grant com.example.javamod01.PreviewState net.minecraft.item.BlockItem
+grant com.example.javamod01.PreviewState net.minecraft.client.util.math.MatrixStack

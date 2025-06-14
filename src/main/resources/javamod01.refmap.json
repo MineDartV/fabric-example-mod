@@ -1,0 +1,10 @@
+{
+    "mappings": {
+        "net.minecraft.class_761": "ClientPlayerInteractionManager",
+        "net.minecraft.class_3222": "ClientPlayerEntity",
+        "net.minecraft.class_757": "WorldRenderer",
+        "method_3165": "interactBlock",
+        "method_14326": "getMainHandStack",
+        "method_3109": "method_3109"
+    }
+}

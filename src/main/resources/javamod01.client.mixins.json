@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "package": "com.example.mixin.client",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ClientPlayerEntityMixin",
+        "WorldRendererMixin",
+        "RightClickMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "priority": 1000,
+    "refmap": "javamod01.refmap.json"
+}

@@ -2,14 +2,13 @@ plugins {
     id 'fabric-loom' version '1.10.5' apply false
 }
 
-apply plugin: 'fabric-loom'
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-    withSourcesJar()
 }
+
+apply plugin: 'fabric-loom'
 
 version = '1.0.0'
 group = 'com.example'
@@ -18,30 +17,24 @@ repositories {
     maven {
         url 'https://maven.fabricmc.net/'
     }
-    maven {
-        url 'https://repo.spongepowered.org/maven'
-    }
     mavenCentral()
 }
 
 dependencies {
     minecraft 'com.mojang:minecraft:1.21.5'
     mappings 'net.fabricmc:yarn:1.21.5+build.1:v2'
-    modImplementation 'net.fabricmc:fabric-loader:0.16.14'
-    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.126.0+1.21.5'
+    modImplementation 'net.fabricmc:fabric-loader:0.16.10'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.119.2+1.21.5'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-loom {
-    mixin {
-        add 'main', 'javamod01.client.mixins.json'
-    }
+java {
+    withSourcesJar()
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from('LICENSE') {
-        rename 'LICENSE', 'LICENSE_' + project.name
+        rename 'LICENSE', 'LICENSE_${project.name}'
     }
 }
 
