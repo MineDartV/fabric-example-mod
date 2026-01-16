@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "javamod01",
+  "version": "1.0.0",
+  
+  "name": "Java Mod 01",
+  "description": "A Minecraft mod with autoclicker and HUD menu",
+  "authors": [
+    {
+      "name": "Alex"
+    }
+  ],
+  "contact": {
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  
+  "license": "MIT",
+  
+  "environment": "*",
+  
+  "icon": "assets/javamod01/icon.png",
+  
+  "mixins": [
+    "javamod01.mixins.json"
+  ],
+  
+  "entrypoints": {
+    "client": [
+      "com.example.javamod01.JavaMod01"
+    ]
+  },
+  
+  "depends": {
+    "fabricloader": "${fabric-loader-version}",
+    "minecraft": "${minecraft-version}",
+    "fabric": "${fabric-version}"
+  }
+}

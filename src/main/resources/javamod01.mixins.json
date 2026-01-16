@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.example.javamod01.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AutoClickerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

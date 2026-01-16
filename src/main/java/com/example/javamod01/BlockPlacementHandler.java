@@ -15,21 +15,79 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
-import net.minecraft.text.Text;
+import org.slf4j.LoggerFactory;
 
 public class BlockPlacementHandler {
-    private static final Logger LOGGER = ModLogger.LOGGER;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlockPlacementHandler.class);
 
-    private static KeyBinding PLACE_AIR_KEY;
-    private static KeyBinding PLACE_BELOW_KEY;
     private static boolean placeOnAir = false;
     private static boolean placeBelow = false;
     private static long lastAirPlacement = 0;
     private static final int AIR_PLACEMENT_COOLDOWN = 50; // 50ms cooldown between placements
-    private static MinecraftClient client;
 
-    private static boolean placeBlock(BlockPos pos, Direction side) {
-        if (client.player == null || client.world == null) {
+    public static boolean isPlaceOnAir() {
+        return placeOnAir;
+    }
+
+    public static void setPlaceOnAir(boolean value) {
+        placeOnAir = value;
+    }
+
+    public static boolean isPlaceBelow() {
+        return placeBelow;
+    }
+
+    public static void setPlaceBelow(boolean value) {
+        placeBelow = value;
+    }
+
+    private static void registerKeyBindings() {
+        try {
+            // Register right shift key for settings screen
+            KeyBinding settingsKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.javamod01.settings",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_RIGHT_SHIFT,
+                "category.javamod01.block"
+            ));
+
+            // Register tick event
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                if (client.currentScreen == null && client.player != null) {
+                    if (settingsKey.wasPressed()) {
+                        client.setScreen(new ModSettingsScreen(null));
+                    }
+                }
+            });
+
+            // Log initialization
+            LOGGER.info("BlockPlacementHandler initialized successfully with settings key binding");
+            if (settingsKey != null) {
+                LOGGER.info("  Settings key: {}", settingsKey.getBoundKeyTranslationKey());
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Error registering key bindings", e);
+            throw e;
+        }
+    }
+
+    private static boolean initialized = false;
+
+    public static void init() {
+        try {
+            // Register key bindings during client initialization
+            registerKeyBindings();
+            initialized = true;
+            LOGGER.info("BlockPlacementHandler initialized successfully");
+        } catch (Exception e) {
+            LOGGER.error("Error initializing BlockPlacementHandler", e);
+            throw e;
+        }
+    }
+
+    private static boolean placeBlock(MinecraftClient client, BlockPos pos, Direction side) {
+        if (client.currentScreen != null || client.player == null || client.world == null) {
             return false;
         }
 
@@ -51,11 +109,15 @@ public class BlockPlacementHandler {
             );
 
             // Try to place the block
-            client.interactionManager.interactBlock(
-                client.player,
-                Hand.MAIN_HAND,
-                hitResult
-            );
+            if (client.interactionManager != null) {
+                client.interactionManager.interactBlock(
+                    client.player,
+                    Hand.MAIN_HAND,
+                    hitResult
+                );
+            } else {
+                LOGGER.warn("Interaction manager is null!");
+            }
 
             // Verify placement immediately
             BlockState placedState = client.world.getBlockState(pos);
@@ -72,73 +134,13 @@ public class BlockPlacementHandler {
         }
     }
 
-    public static boolean isPlaceOnAir() {
-        return placeOnAir;
-    }
-
-    public static boolean isPlaceBelow() {
-        return placeBelow;
-    }
-
-    public static void init() {
-        PLACE_AIR_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.javamod01.place.air",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_N,
-            "category.javamod01"
-        ));
-
-        PLACE_BELOW_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.javamod01.place.below",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_M,
-            "category.javamod01"
-        ));
-
-        client = MinecraftClient.getInstance();
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.currentScreen == null && client.player != null && client.world != null) {
-                // Handle key presses
-                if (PLACE_AIR_KEY.wasPressed()) {
-                    placeOnAir = !placeOnAir;
-                    client.player.sendMessage(Text.of("Place on air: " + placeOnAir), false);
-                }
-                if (PLACE_BELOW_KEY.wasPressed()) {
-                    placeBelow = !placeBelow;
-                    client.player.sendMessage(Text.of("Place below: " + placeBelow), false);
-                }
-                
-                // Handle air placement when enabled
-                if (placeOnAir) {
-                    handleAirPlacement();
-                }
-                
-                // Handle below placement
-                if (placeBelow) {
-                    handleBelowPlacement();
-                }
-            }
-        });
-
-        // Initialize key bindings
-        PLACE_AIR_KEY.setPressed(false);
-        PLACE_BELOW_KEY.setPressed(false);
-    }
-
     public static void handleAirPlacement() {
+        MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
             return;
         }
 
         try {
-            // Check cooldown
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastAirPlacement < AIR_PLACEMENT_COOLDOWN) {
-                LOGGER.debug("Cooldown not ready yet");
-                return;
-            }
-
             // Get player position and look vector
             Vec3d playerPos = client.player.getPos();
             Vec3d lookVec = client.player.getRotationVector();
@@ -155,6 +157,13 @@ public class BlockPlacementHandler {
                 return;
             }
             
+            // Check cooldown
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastAirPlacement < AIR_PLACEMENT_COOLDOWN) {
+                LOGGER.debug("Cooldown not ready yet");
+                return;
+            }
+
             // Debug logging
             LOGGER.debug("Attempting to place block at: {}", targetBlockPos);
             LOGGER.debug("Player position: {}", playerPos);
@@ -162,7 +171,7 @@ public class BlockPlacementHandler {
             LOGGER.debug("Distance to target: {}", distanceToTarget);
 
             // Try to place the block
-            if (placeBlock(targetBlockPos, Direction.UP)) {
+            if (placeBlock(client, targetBlockPos, Direction.UP)) {
                 LOGGER.debug("Successfully placed block at: {}", targetBlockPos);
                 lastAirPlacement = currentTime;
             } else {
@@ -175,6 +184,7 @@ public class BlockPlacementHandler {
     }
 
     public static void handleBelowPlacement() {
+        MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
         
         try {
@@ -201,11 +211,15 @@ public class BlockPlacementHandler {
                 );
 
                 // Try to place the block
-                client.interactionManager.interactBlock(
-                    client.player, 
-                    Hand.MAIN_HAND, 
-                    hitResult
-                );
+                if (client.interactionManager != null) {
+                    client.interactionManager.interactBlock(
+                        client.player, 
+                        Hand.MAIN_HAND, 
+                        hitResult
+                    );
+                } else {
+                    LOGGER.warn("Interaction manager is null!");
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Error in below placement: {}", e.getMessage());
@@ -221,9 +235,5 @@ public class BlockPlacementHandler {
 
         BlockState blockState = world.getBlockState(pos);
         return blockState.isAir();
-    }
-
-    public static MinecraftClient getClient() {
-        return client;
     }
 }

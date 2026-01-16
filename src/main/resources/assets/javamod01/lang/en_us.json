@@ -1,0 +1,16 @@
+{
+    "key.javamod01.autoclicker.toggle": "Toggle AutoClicker",
+    "key.javamod01.menu_toggle": "Toggle Menu",
+    "key.javamod01.place_air": "Toggle Place on Air",
+    "key.javamod01.place_below": "Toggle Place Below",
+    "category.javamod01": "JavaMod01",
+    "category.javamod01.clicker": "AutoClicker",
+    "category.javamod01.block": "Block Placement",
+    "key.javamod01.place_air.desc": "Toggle placing blocks in air (N)",
+    "key.javamod01.place_below.desc": "Toggle placing blocks below you (M)",
+    "key.javamod01.autoclicker.toggle.desc": "Toggle AutoClicker (B)",
+    "javamod01.place_air.on": "[JavaMod01] Place on air: ON",
+    "javamod01.place_air.off": "[JavaMod01] Place on air: OFF",
+    "javamod01.place_below.on": "[JavaMod01] Place below: ON",
+    "javamod01.place_below.off": "[JavaMod01] Place below: OFF"
+}

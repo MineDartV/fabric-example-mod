@@ -27,7 +27,7 @@ public class ClientPlayerEntityMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
-        MinecraftClient client = BlockPlacementHandler.getClient();
+        MinecraftClient client = MinecraftClient.getInstance();
         LOGGER.debug("Starting tick with client: {}", client);
         
         if (client.currentScreen == null) {
